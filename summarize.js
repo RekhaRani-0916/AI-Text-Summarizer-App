@@ -1,10 +1,7 @@
 const axios = require("axios");
 
-// This is the funnction where the call to the API is made. Returns the summarized text as a string
-
+// This function calls the Hugging Face API to summarize text
 async function summarizeText(text) {
-  // Insert CODE SNIPPET from Postman below
-
   let data = JSON.stringify({
     inputs: text,
     parameters: {
@@ -15,25 +12,22 @@ async function summarizeText(text) {
 
   let config = {
     method: "post",
-    maxBodyLength: Infinity,
     url: "https://api-inference.huggingface.co/models/facebook/bart-large-cnn",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer ",
+      Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
     },
     data: data,
   };
 
   try {
     const response = await axios.request(config);
-    return response.data[0].suummary_text;
+    return response.data[0].summary_text; // Ensure this matches the API's response structure
   } 
   catch (error) {
-    console.log(error);
+    console.error(error);
+    throw new Error('Error summarizing text');
   }
-
 }
-
-// Allows for summarizeText() to be called outside of this fle
 
 module.exports = summarizeText;
